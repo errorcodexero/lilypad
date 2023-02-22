@@ -6,6 +6,8 @@
 #include <FastLED_NeoMatrix.h>
 #include <FastLED.h>
 
+//#define DEMO
+
 // Choose your prefered pixmap
 #ifndef PSTR
  #define PSTR // Make Arduino Due happy
@@ -152,22 +154,26 @@ void display_bitmap(uint8_t i, bool blink)
 
 void loop()
 {
+  static bool blink = false;
+#ifdef DEMO
   static uint8_t pattern_number = 0;
   static uint8_t pattern_count = 0;
-  static bool blink = false;
-  // uint8_t din = digitalRead(2) | (digitalRead(3) << 1);
   uint8_t din = pattern_number;
+#else
+  uint8_t din = digitalRead(2) | (digitalRead(3) << 1);
+#endif
   if (din)
     blink = true;
   else
     blink = !blink;
   display_bitmap(din, blink);
   delay(200);
-
+#ifdef DEMO
   if (++pattern_count > 7) {
     pattern_count = 0;
     pattern_number = (pattern_number + 1) % 4;
   }
+#endif
 }
 
 void setup()
